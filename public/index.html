@@ -143,7 +143,7 @@ footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
 
 <script>
 // ===== CARD DATA =====
-const CATS = ["Birthday","Love","Friendship","Thank you","Congrats","Eid & Festivals"];
+const CATS = ["Birthday","Love","Friendship","Thank you","Congrats","Eid & Festivals","Puja"];
 const CARDS = [
  {id:1,c:"Birthday",e:"🎂",t:"Happy Birthday!",g:["#ff9a5a","#e0447c"],m:"Wishing you a day full of joy, cake and laughter."},
  {id:2,c:"Birthday",e:"🎈",t:"Another Year Brighter",g:["#36d1dc","#5b86e5"],m:"May this year bring everything you dream of."},
@@ -162,7 +162,13 @@ const CARDS = [
  {id:15,c:"Congrats",e:"🏆",t:"You Did It!",g:["#f2994a","#f2c94c"],m:"Celebrating your big win with you."},
  {id:16,c:"Eid & Festivals",e:"🌙",t:"Eid Mubarak",g:["#0f2027","#2c7a6b"],m:"May Allah accept your prayers and fill your home with joy."},
  {id:17,c:"Eid & Festivals",e:"🕌",t:"Ramadan Kareem",g:["#134e5e","#71b280"],m:"Wishing you a blessed and peaceful month."},
- {id:18,c:"Eid & Festivals",e:"🪔",t:"Happy Festival",g:["#ff512f","#dd2476"],m:"May your days glow with light, love and happiness."}
+ {id:18,c:"Eid & Festivals",e:"🪔",t:"Happy Festival",g:["#ff512f","#dd2476"],m:"May your days glow with light, love and happiness."},
+ {id:19,c:"Puja",e:"🔱",t:"Happy Durga Puja",g:["#b71c1c","#ff8f00"],m:"May Maa Durga bless you and your family with strength, peace and joy."},
+ {id:20,c:"Puja",e:"🌺",t:"Shubho Bijoya",g:["#e91e63","#ffb300"],m:"Shubho Bijoya! Wishing you love, sweets and warm hugs."},
+ {id:21,c:"Puja",e:"🪷",t:"Saraswati Puja",g:["#1e88a8","#4db6ac"],m:"May Maa Saraswati bless you with knowledge, wisdom and creativity."},
+ {id:22,c:"Puja",e:"🪔",t:"Happy Kali Puja",g:["#232526","#a4161a"],m:"May the light of Maa Kali remove all darkness from your life."},
+ {id:23,c:"Puja",e:"🪙",t:"Lakshmi Puja",g:["#d4145a","#fbb03b"],m:"May Maa Lakshmi fill your home with happiness and prosperity."},
+ {id:24,c:"Puja",e:"🦚",t:"Happy Janmashtami",g:["#283c86","#45a247"],m:"May Lord Krishna fill your life with love, joy and peace."}
 ];
 
 // ===== HELPERS =====
@@ -337,7 +343,7 @@ $("#sendFb").onclick=async()=>{
 
 // ===== UPCOMING EVENTS (from the calendar) =====
 let hasEvents=false;
-function catFor(n){n=n.toLowerCase();return /valentine|love/.test(n)?"Love":/friend/.test(n)?"Friendship":/mother|father|teacher|thank/.test(n)?"Thank you":"Eid & Festivals"}
+function catFor(n){n=n.toLowerCase();return /puja|durga|kali|saraswati|lakshmi|laxmi|janmashtami|diwali|dipabali|bijoya|navaratri|dussehra/.test(n)?"Puja":/valentine|love/.test(n)?"Love":/friend/.test(n)?"Friendship":/mother|father|teacher|thank/.test(n)?"Thank you":"Eid & Festivals"}
 fetch("/api/events").then(r=>r.ok?r.json():[]).then(list=>{
   if(!list.length)return;hasEvents=true;
   $("#evgrid").innerHTML=list.map(e=>{const dt=new Date(e.date+"T00:00:00");return `<div class="ev"><div class="evd"><b>${dt.getDate()}</b>${dt.toLocaleString("en",{month:"short"})}</div><div class="evn">${esc(e.name)}</div><button class="btn" data-ev="${esc(catFor(e.name))}">Make a card</button></div>`}).join("");
