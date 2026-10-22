@@ -1,0 +1,26 @@
+<!DOCTYPE html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex"><title>Cardival feedback (admin)</title>
+<style>body{font-family:system-ui,sans-serif;margin:24px;max-width:900px}input,button{padding:8px 12px;font:inherit}table{border-collapse:collapse;width:100%;margin-top:14px}td,th{border:1px solid #ccc;padding:6px 8px;text-align:left;vertical-align:top}th{background:#eee}</style></head>
+<body><h1>Cardival feedback</h1>
+<input id="k" type="password" placeholder="Admin key"> <button id="go">Load</button> <button id="csv">Download CSV</button>
+<p id="msg"></p><table id="t"></table>
+<script>
+let rows=[];
+const $=s=>document.querySelector(s);
+$("#go").onclick=async()=>{
+  $("#msg").textContent="Loading...";
+  try{
+    const r=await fetch("/api/feedback",{headers:{"x-admin-key":$("#k").value}});
+    if(!r.ok)throw 0; rows=await r.json();
+    $("#msg").textContent=rows.length+" message(s), newest first";
+    const t=$("#t");t.innerHTML="";
+    const hr=t.insertRow();["Date","Message","Contact"].forEach(h=>{const c=document.createElement("th");c.textContent=h;hr.appendChild(c)});
+    rows.forEach(f=>{const tr=t.insertRow();[new Date(f.at).toLocaleString(),f.text,f.contact||""].forEach(v=>tr.insertCell().textContent=v)});
+  }catch(e){$("#msg").textContent="Wrong key or server error."}
+};
+$("#csv").onclick=()=>{
+  const q=v=>'"'+String(v).replace(/"/g,'""')+'"';
+  const csv=["Date,Message,Contact",...rows.map(f=>[f.at,f.text,f.contact||""].map(q).join(","))].join("\n");
+  const a=document.createElement("a");a.href=URL.createObjectURL(new Blob([csv],{type:"text/csv"}));a.download="cardival-feedback.csv";a.click();
+};
+</script></body></html>

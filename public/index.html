@@ -20,9 +20,9 @@ header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blu
 .logo img{height:62px;width:auto;display:block}
 body{position:relative;overflow-x:hidden}
 body::before{content:"";position:absolute;top:0;left:0;right:0;height:820px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 55% 70% at 12% 0%,var(--g1) 0,transparent 70%),radial-gradient(ellipse 50% 65% at 92% 5%,var(--g2) 0,transparent 70%)}
-.hero h1{margin:0 0 6px}.herologo{width:min(560px,90vw);height:auto}
+.hero h1{margin:0 0 6px}.herologo{width:min(560px,90vw);height:auto;display:block;margin:0 auto}
 .dk{display:none!important}
-:root[data-theme=dark] .dk{display:inline-block!important}
+:root[data-theme=dark] .dk{display:block!important}
 :root[data-theme=dark] .lt{display:none!important}
 nav{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end}
 #themes{display:inline-flex;margin-left:14px;border:2px solid var(--line);border-radius:99px;overflow:hidden}
@@ -38,7 +38,7 @@ section{padding:48px 5vw;max-width:1100px;margin:auto}
 .btn.wa{background:#25d366}
 .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
-.face{border-radius:var(--r);color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:22px;aspect-ratio:4/5;box-shadow:0 8px 24px rgba(60,30,90,.18)}
+.face{position:relative;overflow:hidden;border-radius:var(--r);color:#fff;text-align:center;display:flex;flex-direction:column;justify-content:center;align-items:center;padding:22px;aspect-ratio:4/5;box-shadow:0 8px 24px rgba(60,30,90,.18)}
 .face .em{font-size:3.4rem}
 .face h3{margin:8px 0;font-size:1.25rem}
 .face .to{font-weight:700;font-size:1.05rem}
@@ -62,12 +62,21 @@ textarea{min-height:110px;resize:vertical}
 footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
 #toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none}
 #toast.on{opacity:1}
+.pw{position:absolute;transform:translate(-50%,-50%);cursor:grab;touch-action:none;user-select:none}
+.pw img{width:100%;display:block;border-radius:12px;box-shadow:0 4px 14px rgba(0,0,0,.3);pointer-events:none}
+.pw.sel{outline:2px dashed #fff;outline-offset:3px}
+.hdl{position:absolute;right:-10px;bottom:-10px;width:20px;height:20px;border-radius:50%;background:#fff;border:3px solid var(--pri);cursor:nwse-resize}
+.btn.msgr{background:#0084ff}.btn.ig{background:linear-gradient(45deg,#f9a03f,#e1306c,#833ab4)}
+.evgrid{display:grid;grid-template-columns:repeat(auto-fill,minmax(240px,1fr));gap:14px}
+.ev{background:var(--card);border-radius:var(--r);padding:14px;display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.evd{background:var(--pri);color:#fff;border-radius:12px;padding:6px 10px;text-align:center;font-size:.8rem;line-height:1.1}.evd b{display:block;font-size:1.3rem}
+.evn{flex:1;font-weight:700;min-width:100px}.ev .btn{padding:8px 16px;font-size:.9rem}
 </style>
 </head>
 <body>
 <header>
   <a class="logo" href="#" id="logo"><img class="lt" src="/cardival-logo-light.png?v=8" alt="Cardival – Make every moment special"><img class="dk" src="/cardival-logo-dark.png?v=8" alt="Cardival – Make every moment special"></a>
-  <nav><a href="#gallery" data-go="gallery">Cards</a><a href="#contact" data-go="contact">Contact</a>
+  <nav><a href="#gallery" data-go="gallery">Cards</a><a href="#contact" data-go="contact">Feedback</a>
     <div id="themes" role="group" aria-label="Theme"><button data-t="light" title="Light mode" aria-label="Light mode">☀️</button><button data-t="dark" title="Dark mode" aria-label="Dark mode">🌙</button><button data-t="system" title="Match my device" aria-label="System mode">🖥️</button></div></nav>
 </header>
 
@@ -76,6 +85,12 @@ footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
   <p>Pick a card, add your words, and send it in seconds.</p>
   <button class="btn" data-go="gallery">Explore Cards</button>
   <div class="row" id="previews"></div>
+</section>
+
+<section id="events" class="hide">
+  <h2>Coming up</h2>
+  <p class="note">Pick a card for the next occasion.</p>
+  <div class="evgrid" id="evgrid"></div>
 </section>
 
 <section id="gallery">
@@ -91,12 +106,19 @@ footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
       <label for="to">Recipient's name</label><input id="to" maxlength="40" placeholder="e.g. Rahim">
       <label for="from">Your name</label><input id="from" maxlength="40" placeholder="e.g. Nila">
       <label for="msg">Your message</label><textarea id="msg" maxlength="240"></textarea>
+      <label for="photo">Add photos (optional, up to 4)</label>
+      <input type="file" id="photo" accept="image/*" multiple>
+      <p class="note" style="margin:6px 0">Drag a photo to move it anywhere. Drag its white dot to make it bigger or smaller.</p>
+      <button class="btn alt hide" id="rmPhoto" style="padding:6px 16px">Remove selected photo</button>
+      <label style="display:flex;gap:8px;align-items:center;margin-top:12px"><input type="checkbox" id="blank" style="width:auto"> Blank canvas (hide the emoji and title)</label>
       <div class="actions">
         <button class="btn" id="dl">⬇ Download image</button>
         <button class="btn wa" id="wa">WhatsApp</button>
+        <button class="btn msgr" id="msgr">Messenger</button>
+        <button class="btn ig" id="ig">Instagram</button>
         <button class="btn alt" id="copy">🔗 Copy link</button>
       </div>
-      <p class="note">The link holds your card inside it, so no account is needed.</p>
+      <p class="note">Your photo is saved only so your card shows it at its share link.</p>
     </div>
     <div id="preview"></div>
   </div>
@@ -108,21 +130,18 @@ footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
 </section>
 
 <section id="contact">
-  <h2>Contact &amp; feedback</h2>
+  <h2>Feedback</h2>
   <p>Something not working, or want a feature? Tell us.</p>
-  <div class="actions"><a class="btn wa" id="contactWa" target="_blank" rel="noopener">Chat on WhatsApp</a></div>
   <label for="fb">What should we build next?</label>
-  <textarea id="fb" placeholder="More Eid cards, photo upload, Bangla fonts..."></textarea>
+  <textarea id="fb" maxlength="1000" placeholder="More Eid cards, Bangla fonts, ..."></textarea>
+  <label for="fbc">Email or phone (optional, only if you want a reply)</label>
+  <input id="fbc" maxlength="80">
   <div class="actions"><button class="btn" id="sendFb">Send feedback</button></div>
 </section>
 <footer>© <span id="yr"></span> Cardival · Made with love</footer>
 <div id="toast"></div>
 
 <script>
-// ===== SETTINGS: change these =====
-const WHATSAPP_NUMBER = "8801XXXXXXXXX"; // your number, country code first, no + or spaces
-const FEEDBACK_URL = "/api/feedback"; // later: your backend endpoint (POST JSON). Empty = send via WhatsApp
-
 // ===== CARD DATA =====
 const CATS = ["Birthday","Love","Friendship","Thank you","Congrats","Eid & Festivals"];
 const CARDS = [
@@ -153,10 +172,11 @@ const grad = c => `linear-gradient(135deg,${c.g[0]},${c.g[1]})`;
 function toast(t){const e=$("#toast");e.textContent=t;e.classList.add("on");setTimeout(()=>e.classList.remove("on"),2200)}
 function face(c,d){
   d=d||{};
-  return `<div class="face" style="background:${grad(c)}"><div class="em">${c.e}</div><h3>${esc(c.t)}</h3>`+
+  const pics=(d.photos||[]).map((q,i)=>{const on=d.edit&&i===d.sel;return `<div class="pw${on?" sel":""}" data-i="${i}" style="left:${q.x}%;top:${q.y}%;width:${q.w}%"><img src="${esc(q.src)}" alt="" draggable="false">${on?'<i class="hdl"></i>':""}</div>`}).join("");
+  return `<div class="face" style="background:${grad(c)}">`+(d.blank?"":`<div class="em">${c.e}</div><h3>${esc(c.t)}</h3>`)+
    (d.to?`<div class="to">Dear ${esc(d.to)},</div>`:"")+
    (d.m?`<div class="msg">${esc(d.m)}</div>`:"")+
-   (d.from?`<div class="from">— ${esc(d.from)}</div>`:"")+`</div>`;
+   (d.from?`<div class="from">— ${esc(d.from)}</div>`:"")+pics+`</div>`;
 }
 function enc(o){const b=new TextEncoder().encode(JSON.stringify(o));let s="";b.forEach(x=>s+=String.fromCharCode(x));return btoa(s).replace(/\+/g,"-").replace(/\//g,"_").replace(/=+$/,"")}
 function dec(t){try{t=t.replace(/-/g,"+").replace(/_/g,"/");const s=atob(t),b=Uint8Array.from(s,c=>c.charCodeAt(0));return JSON.parse(new TextDecoder().decode(b))}catch(e){return null}}
@@ -164,12 +184,10 @@ function dec(t){try{t=t.replace(/-/g,"+").replace(/_/g,"/");const s=atob(t),b=Ui
 // ===== STATE / VIEWS =====
 let cur=null, cat="All";
 function show(name){
-  ["home","gallery","editor","viewer","contact"].forEach(id=>{
-    const el=$("#"+id);
-    const visible = name==="viewer" ? id==="viewer"
-      : name==="editor" ? id==="editor"
-      : (id==="home"||id==="gallery"||id==="contact");
-    el.classList.toggle("hide",!visible);
+  ["home","events","gallery","editor","viewer","contact"].forEach(id=>{
+    const main=id==="home"||id==="gallery"||id==="contact"||(id==="events"&&hasEvents);
+    const visible = name==="viewer" ? id==="viewer" : name==="editor" ? id==="editor" : main;
+    $("#"+id).classList.toggle("hide",!visible);
   });
   window.scrollTo({top:0,behavior:"smooth"});
 }
@@ -190,39 +208,68 @@ $("#grid").onclick=e=>{const b=e.target.closest("[data-id]");if(b)openEditor(+b.
 $("#previews").innerHTML=[1,4,16].map(i=>`<div style="width:190px">${face(CARDS[i-1])}</div>`).join("");
 
 // ===== EDITOR =====
-function data(){return {to:$("#to").value.trim(),from:$("#from").value.trim(),m:$("#msg").value.trim()}}
-function drawPreview(){$("#preview").innerHTML=face(cur,data())}
+function data(){return {to:$("#to").value.trim(),from:$("#from").value.trim(),m:$("#msg").value.trim(),photos,blank:$("#blank").checked}}
+function drawPreview(){$("#preview").innerHTML=face(cur,{...data(),edit:true,sel});$("#rmPhoto").classList.toggle("hide",sel<0)}
 function openEditor(id){
   cur=CARDS.find(c=>c.id===id);
-  $("#to").value="";$("#from").value="";$("#msg").value=cur.m;
+  $("#to").value="";$("#from").value="";$("#msg").value=cur.m;photos=[];sel=-1;$("#blank").checked=false;$("#photo").value="";
   drawPreview();show("editor");
 }
 ["to","from","msg"].forEach(i=>$("#"+i).addEventListener("input",drawPreview));
+let photos=[],sel=-1,drag=null;
+const loadImg=src=>new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src=src});
+$("#photo").onchange=async e=>{
+  const files=[...e.target.files];e.target.value="";
+  for(const f of files){
+    if(photos.length>=4){toast("Up to 4 photos per card");break}
+    if(!f.type.startsWith("image/")){toast("Please choose an image");continue}
+    const u=URL.createObjectURL(f);
+    try{
+      const im=await loadImg(u),k=Math.min(1,900/Math.max(im.width,im.height)),cv=document.createElement("canvas");
+      cv.width=Math.round(im.width*k);cv.height=Math.round(im.height*k);
+      const g=cv.getContext("2d");g.fillStyle="#fff";g.fillRect(0,0,cv.width,cv.height);g.drawImage(im,0,0,cv.width,cv.height);
+      const n=photos.length;photos.push({src:cv.toDataURL("image/jpeg",.82),x:50+n*6,y:48+n*6,w:45});sel=photos.length-1;
+    }catch(x){toast("Could not read that image")}
+    URL.revokeObjectURL(u);
+  }
+  drawPreview();
+};
+$("#rmPhoto").onclick=()=>{if(sel>=0){photos.splice(sel,1);sel=-1;drawPreview()}};
+$("#blank").onchange=drawPreview;
+const pv=$("#preview");
+pv.addEventListener("pointerdown",e=>{
+  const w=e.target.closest(".pw");
+  if(!w){if(sel>=0){sel=-1;drawPreview()}return}
+  const i=+w.dataset.i,size=!!e.target.closest(".hdl"),q=photos[i],box=pv.querySelector(".face").getBoundingClientRect();
+  if(sel!==i){sel=i;drawPreview()}
+  drag={i,size,box,sx:e.clientX,sy:e.clientY,ox:q.x,oy:q.y,ow:q.w};
+  pv.setPointerCapture(e.pointerId);e.preventDefault();
+});
+pv.addEventListener("pointermove",e=>{
+  if(!drag)return;
+  const q=photos[drag.i],el=pv.querySelector('.pw[data-i="'+drag.i+'"]'),dx=(e.clientX-drag.sx)/drag.box.width*100,dy=(e.clientY-drag.sy)/drag.box.height*100;
+  if(!el)return;
+  if(drag.size){q.w=Math.min(150,Math.max(8,drag.ow+2*dx));el.style.width=q.w+"%"}
+  else{q.x=Math.min(120,Math.max(-20,drag.ox+dx));q.y=Math.min(120,Math.max(-20,drag.oy+dy));el.style.left=q.x+"%";el.style.top=q.y+"%"}
+});
+pv.addEventListener("pointerup",()=>{drag=null});
+pv.addEventListener("pointercancel",()=>{drag=null});
+
 function longLink(){const d=data();return location.origin+location.pathname+"#c."+enc({i:cur.id,t:d.to,f:d.from,m:d.m})}
 async function link(){
   const d=data();
   try{
-    const r=await fetch("/api/cards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({i:cur.id,t:d.to,f:d.from,m:d.m})});
+    const r=await fetch("/api/cards",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({i:cur.id,t:d.to,f:d.from,m:d.m,b:d.blank,ps:d.photos.map(q=>({d:q.src,x:q.x,y:q.y,w:q.w}))})});
     if(!r.ok)throw 0;const j=await r.json();return location.origin+"/c/"+j.id;
   }catch(e){return longLink()}
 }
 function plainText(){const d=data();return `${cur.e} ${cur.t}\n${d.to?"Dear "+d.to+",\n":""}${d.m}\n${d.from?"— "+d.from:""}`}
 
-$("#copy").onclick=async()=>{
-  const l=await link();
-  try{await navigator.clipboard.writeText(l);toast("Link copied!")}
-  catch(e){prompt("Copy this link:",l)}
-};
-$("#wa").onclick=async()=>{
-  const w=window.open("","_blank"),l=await link(),u="https://wa.me/?text="+encodeURIComponent(plainText()+"\n\n"+l);
-  if(w)w.location=u;else location.href=u;
-};
-$("#dl").onclick=async()=>{
+async function renderCanvas(){
   const d=data(),W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const x=cv.getContext("2d"),gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,cur.g[0]);gr.addColorStop(1,cur.g[1]);
   x.fillStyle=gr;x.fillRect(0,0,W,H);x.fillStyle="#fff";x.textAlign="center";
-  x.font="220px serif";x.fillText(cur.e,W/2,330);
-  x.font="bold 78px system-ui,sans-serif";x.fillText(cur.t,W/2,500);
+  if(!d.blank){x.font="220px serif";x.fillText(cur.e,W/2,330);x.font="bold 78px system-ui,sans-serif";x.fillText(cur.t,W/2,500)}
   let y=620;
   if(d.to){x.font="bold 54px system-ui,sans-serif";x.fillText("Dear "+d.to+",",W/2,y);y+=90}
   x.font="46px system-ui,sans-serif";
@@ -230,13 +277,33 @@ $("#dl").onclick=async()=>{
   d.m.split("\n").forEach(p=>{let l="";p.split(" ").forEach(w=>{const t=l?l+" "+w:w;if(x.measureText(t).width>880&&l){lines.push(l);l=w}else l=t});lines.push(l)});
   lines.slice(0,7).forEach(l=>{x.fillText(l,W/2,y);y+=66});
   if(d.from){x.font="italic 48px system-ui,sans-serif";x.fillText("— "+d.from,W/2,y+50)}
-  x.globalAlpha=1;
-  try{const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src="/cardival-logo.png?v=7"});
-    const lw=360,lh=lw*im.height/im.width,lx=(W-lw)/2,ly=H-lh-40;
-    x.save();x.beginPath();if(x.roundRect)x.roundRect(lx,ly,lw,lh,26);else x.rect(lx,ly,lw,lh);x.clip();x.drawImage(im,lx,ly,lw,lh);x.restore()}
+  for(const q of d.photos){try{const im=await loadImg(q.src),w=q.w/100*W,h=w*im.height/im.width,px=q.x/100*W-w/2,py=q.y/100*H-h/2;x.save();x.beginPath();if(x.roundRect)x.roundRect(px,py,w,h,22);else x.rect(px,py,w,h);x.clip();x.drawImage(im,px,py,w,h);x.restore()}catch(e){}}
+  try{const im=await loadImg("/cardival-logo.png?v=7"),lw=360,lh=lw*im.height/im.width,lx=(W-lw)/2,ly=H-lh-40;x.save();x.beginPath();if(x.roundRect)x.roundRect(lx,ly,lw,lh,26);else x.rect(lx,ly,lw,lh);x.clip();x.drawImage(im,lx,ly,lw,lh);x.restore()}
   catch(e){x.font="34px system-ui,sans-serif";x.fillText("Made with Cardival",W/2,H-60)}
-  const a=document.createElement("a");a.download="cardival-card.png";a.href=cv.toDataURL("image/png");a.click();
-  toast("Downloading...");
+  return cv;
+}
+async function cardFile(){const cv=await renderCanvas();return new Promise(r=>cv.toBlob(b=>r(new File([b],"cardival-card.png",{type:"image/png"})),"image/png"))}
+function saveFile(f){const a=document.createElement("a");a.download=f.name;a.href=URL.createObjectURL(f);a.click();setTimeout(()=>URL.revokeObjectURL(a.href),4000)}
+
+$("#dl").onclick=async()=>{saveFile(await cardFile());toast("Downloading...")};
+$("#copy").onclick=async()=>{
+  const l=await link();
+  try{await navigator.clipboard.writeText(l);toast("Link copied!")}catch(e){prompt("Copy this link:",l)}
+};
+$("#wa").onclick=async()=>{
+  const w=window.open("","_blank"),l=await link(),u="https://wa.me/?text="+encodeURIComponent(plainText()+"\n\n"+l);
+  if(w)w.location=u;else location.href=u;
+};
+$("#msgr").onclick=async()=>{
+  const l=await link();
+  if(/Android|iPhone|iPad/i.test(navigator.userAgent)){location.href="fb-messenger://share/?link="+encodeURIComponent(l);return}
+  try{await navigator.clipboard.writeText(l)}catch(e){}
+  window.open("https://www.messenger.com/","_blank");toast("Link copied. Paste it in Messenger.");
+};
+$("#ig").onclick=async()=>{
+  const f=await cardFile();
+  if(navigator.canShare&&navigator.canShare({files:[f]})){try{await navigator.share({files:[f],text:plainText()});return}catch(e){if(e.name==="AbortError")return}}
+  saveFile(f);toast("Image saved. Open Instagram and upload it from your gallery.");
 };
 
 // ===== SHARED CARD VIEW =====
@@ -245,28 +312,39 @@ function route(){
   if(m){
     fetch("/api/cards/"+m[1]).then(r=>r.ok?r.json():Promise.reject()).then(o=>{
       const c=CARDS.find(c=>c.id===o.i);
-      if(c){$("#shared").innerHTML=face(c,{to:o.t,from:o.f,m:o.m});show("viewer")}
+      if(c){$("#shared").innerHTML=face(c,{to:o.t,from:o.f,m:o.m,blank:o.b,photos:(o.ps||[]).map(q=>({src:q.u,x:q.x,y:q.y,w:q.w}))});show("viewer")}
     }).catch(()=>toast("Card not found"));
     return;
   }
   const h=location.hash;
   if(h.startsWith("#c.")){
     const o=dec(h.slice(3)),c=o&&CARDS.find(c=>c.id===o.i);
-    if(c){$("#shared").innerHTML=face(c,{to:o.t,from:o.f,m:o.m});show("viewer");return}
+    if(c){$("#shared").innerHTML=face(c,{to:o.t,from:o.f,m:o.m,blank:o.b,photos:(o.ps||[]).map(q=>({src:q.u,x:q.x,y:q.y,w:q.w}))});show("viewer");return}
   }
 }
 window.addEventListener("hashchange",route);
 
-// ===== CONTACT / FEEDBACK =====
-$("#contactWa").href="https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent("Hi Cardival!");
+// ===== FEEDBACK =====
 $("#sendFb").onclick=async()=>{
   const t=$("#fb").value.trim();if(!t){toast("Please write something first");return}
-  if(FEEDBACK_URL){
-    try{const r=await fetch(FEEDBACK_URL,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feedback:t})});if(!r.ok)throw 0;$("#fb").value="";toast("Thank you!");return}
-    catch(e){}
-  }
-  window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent("Cardival feedback: "+t),"_blank");
+  const b=$("#sendFb");b.disabled=true;
+  try{
+    const r=await fetch("/api/feedback",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({feedback:t,contact:$("#fbc").value.trim()})});
+    if(!r.ok)throw 0;$("#fb").value="";$("#fbc").value="";toast("Thank you! We got your feedback.");
+  }catch(e){toast("Could not send. Please try again.")}
+  b.disabled=false;
 };
+
+// ===== UPCOMING EVENTS (from the calendar) =====
+let hasEvents=false;
+function catFor(n){n=n.toLowerCase();return /valentine|love/.test(n)?"Love":/friend/.test(n)?"Friendship":/mother|father|teacher|thank/.test(n)?"Thank you":"Eid & Festivals"}
+fetch("/api/events").then(r=>r.ok?r.json():[]).then(list=>{
+  if(!list.length)return;hasEvents=true;
+  $("#evgrid").innerHTML=list.map(e=>{const dt=new Date(e.date+"T00:00:00");return `<div class="ev"><div class="evd"><b>${dt.getDate()}</b>${dt.toLocaleString("en",{month:"short"})}</div><div class="evn">${esc(e.name)}</div><button class="btn" data-ev="${esc(catFor(e.name))}">Make a card</button></div>`}).join("");
+  if(!$("#home").classList.contains("hide"))$("#events").classList.remove("hide");
+}).catch(()=>{});
+$("#evgrid").onclick=e=>{const b=e.target.closest("[data-ev]");if(b){cat=b.dataset.ev;drawGallery();go("gallery")}};
+
 // ===== THEME (light / dark / system) =====
 const mq=matchMedia("(prefers-color-scheme: dark)");
 function themePref(){try{return localStorage.getItem("cardival-theme")||"system"}catch(e){return"system"}}

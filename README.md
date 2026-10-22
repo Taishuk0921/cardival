@@ -1,32 +1,26 @@
 # Cardival
 
-Static front end (`public/index.html`) + small Node/Express back end (`server.js`).
-Back end: short card links (`/c/abc123`), feedback storage, rate limiting.
+Front end: `public/index.html` (+ `public/admin.html` for developers). Back end: `server.js` (Node + Express).
 
-## Run it on your computer
-1. Install Node.js 18+ (nodejs.org)
-2. In this folder:  `npm install`  then  `npm start`
-3. Open http://localhost:3000
+## Run on your computer
+`npm install` then `npm start`, open http://localhost:3000
 
-Edit `WHATSAPP_NUMBER` at the top of the script in `public/index.html`.
+## Settings (environment variables on Render, or a `.env` file locally)
+| Name | What it does |
+|---|---|
+| `ADMIN_KEY` | Secret key to read feedback at `/admin` |
+| `DATA_DIR` | Folder for saved cards, photos and feedback (use a persistent disk) |
+| `FEEDBACK_WEBHOOK_URL` | Optional Discord or Slack webhook: every feedback message also arrives there instantly |
+| `CALENDAR_ICS_URLS` | Optional, comma-separated iCal links for the "Coming up" festivals section |
 
-## Read feedback
-Copy `.env.example` to `.env` (or set the env vars on your host), then:
-`curl -H "x-admin-key: YOUR_KEY" https://your-site/api/feedback`
+## Reading feedback (developers)
+Open `https://your-site/admin`, type the `ADMIN_KEY`, click Load. You can download a CSV.
+For a copy that survives restarts on free hosting, also set `FEEDBACK_WEBHOOK_URL`.
 
-## Put it online (not localhost)
-**Easiest: Render.com / Railway.app**
-1. Push this folder to a GitHub repo.
-2. Create a "Web Service" from the repo. Build: `npm install`. Start: `npm start`.
-3. Add env vars: `ADMIN_KEY`, and `DATA_DIR=/var/data`.
-4. Attach a persistent disk mounted at `/var/data` (otherwise cards and feedback are erased on each redeploy).
-5. Add your own domain in the host's settings. HTTPS is automatic.
+## Festivals from Google Calendar
+The site reads iCal feeds and refreshes every 6 hours. To control it yourself: in Google Calendar open the calendar's
+Settings, then "Integrate calendar", copy the "Public address in iCal format", and put it in `CALENDAR_ICS_URLS`.
+Events you add there appear on the site automatically (the calendar must be public; repeating events are skipped).
 
-**Your own VPS (Ubuntu)**
-1. Install Node 20, then upload this folder and run `npm install`.
-2. `sudo npm i -g pm2 && pm2 start server.js --name cardival && pm2 save && pm2 startup`
-3. Install Nginx and proxy your domain to `http://127.0.0.1:3000`.
-4. `sudo certbot --nginx -d yourdomain.com` for free HTTPS.
-
-## Later
-Swap the JSON files for SQLite/Postgres when traffic grows.
+## Photos
+Photos are resized in the browser, stored in `DATA_DIR/photos`, and shown only on that card's share link.
