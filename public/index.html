@@ -3,27 +3,38 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="icon" type="image/png" href="/favicon.png">
-<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<link rel="icon" href="/favicon.ico?v=2" sizes="any">
+<link rel="icon" type="image/png" sizes="32x32" href="/favicon.png?v=2">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png?v=2">
 <meta name="theme-color" content="#a42a45">
+<script>try{var p=localStorage.getItem("cardival-theme")||"system";document.documentElement.dataset.theme=(p==="dark"||(p==="system"&&matchMedia("(prefers-color-scheme: dark)").matches))?"dark":"light"}catch(e){}</script>
 <title>Cardival – Make Every Moment Special</title>
 <meta name="description" content="Create and share beautiful e-cards for birthdays, Eid, love, thanks and more.">
 <style>
-:root{--ink:#3b1a26;--mut:#7d5a66;--bg:#fef7ed;--pri:#a42a45;--pri2:#d7495f;--card:#fff;--r:18px}
+:root{--ink:#3b1a26;--mut:#7d5a66;--bg:#e9dccb;--pri:#a42a45;--pri2:#d7495f;--card:#f3e9dc;--r:18px;--line:#cfbfae;--hline:#d9c9b6;--hdr:rgba(233,220,203,.92);--g1:#eec0cb;--g2:#eed39a;color-scheme:light}
+:root[data-theme=dark]{--ink:#fbeff3;--mut:#c9aab5;--bg:#1c1218;--card:#2a1b24;--line:#4d3543;--hline:#3a2631;--hdr:rgba(28,18,24,.92);--g1:rgba(164,42,69,.35);--g2:rgba(246,184,58,.12);--pri:#c93a5c;--pri2:#ef6f86;color-scheme:dark}
 *{box-sizing:border-box}
-body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
-header{position:sticky;top:0;z-index:5;background:rgba(254,247,237,.92);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;padding:6px 5vw;border-bottom:1px solid #f0e4d8}
+body{transition:background .2s,color .2s;margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
+header{position:sticky;top:0;z-index:5;background:var(--hdr);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;padding:6px 5vw;border-bottom:1px solid var(--hline)}
 .logo{font-weight:800;font-size:1.4rem;color:var(--pri);text-decoration:none}
 .logo img{height:62px;width:auto;display:block}
-.hero{background:radial-gradient(circle at 15% 10%,#ffd9e2 0,transparent 42%),radial-gradient(circle at 88% 18%,#ffeab8 0,transparent 38%);border-radius:0 0 36px 36px}
+body{position:relative;overflow-x:hidden}
+body::before{content:"";position:absolute;top:0;left:0;right:0;height:820px;z-index:-1;pointer-events:none;background:radial-gradient(ellipse 55% 70% at 12% 0%,var(--g1) 0,transparent 70%),radial-gradient(ellipse 50% 65% at 92% 5%,var(--g2) 0,transparent 70%)}
 .hero h1{margin:0 0 6px}.herologo{width:min(560px,90vw);height:auto}
+.dk{display:none!important}
+:root[data-theme=dark] .dk{display:inline-block!important}
+:root[data-theme=dark] .lt{display:none!important}
+nav{display:flex;align-items:center;flex-wrap:wrap;justify-content:flex-end}
+#themes{display:inline-flex;margin-left:14px;border:2px solid var(--line);border-radius:99px;overflow:hidden}
+#themes button{border:0;background:transparent;cursor:pointer;padding:3px 9px;font-size:.95rem}
+#themes button.on{background:var(--pri)}
 nav a{margin-left:18px;color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
 section{padding:48px 5vw;max-width:1100px;margin:auto}
 .hero{text-align:center;padding-top:60px}
 .hero h1{font-size:clamp(2rem,6vw,3.4rem);margin:0 0 10px}
 .hero p{color:var(--mut);font-size:1.15rem;margin:0 0 24px}
 .btn{display:inline-block;border:0;cursor:pointer;background:linear-gradient(135deg,var(--pri),var(--pri2));color:#fff;padding:12px 26px;border-radius:99px;font-weight:700;font-size:1rem;text-decoration:none}
-.btn.alt{background:#fff;color:var(--ink);border:2px solid #e6dcec}
+.btn.alt{background:var(--card);color:var(--ink);border:2px solid var(--line)}
 .btn.wa{background:#25d366}
 .row{display:flex;gap:14px;flex-wrap:wrap;justify-content:center;margin-top:34px}
 .grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:18px}
@@ -38,29 +49,30 @@ section{padding:48px 5vw;max-width:1100px;margin:auto}
 .tile .face .em{font-size:2.6rem}
 .tile button{width:100%;margin-top:8px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 22px}
-.chip{border:2px solid #e6dcec;background:#fff;border-radius:99px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--ink)}
+.chip{border:2px solid var(--line);background:var(--card);border-radius:99px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--ink)}
 .chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .editor{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
 @media(max-width:720px){.editor{grid-template-columns:1fr}nav a{margin-left:10px}}
 label{display:block;font-weight:700;margin:12px 0 4px}
-input,textarea{width:100%;padding:10px 12px;border:2px solid #e6dcec;border-radius:12px;font:inherit;background:#fff;color:var(--ink)}
+input,textarea{width:100%;padding:10px 12px;border:2px solid var(--line);border-radius:12px;font:inherit;background:var(--card);color:var(--ink)}
 textarea{min-height:110px;resize:vertical}
 .actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:18px}
 .hide{display:none}
 .note{color:var(--mut);font-size:.9rem}
 footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
-#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 20px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none}
+#toast{position:fixed;bottom:22px;left:50%;transform:translateX(-50%);background:var(--ink);color:var(--bg);padding:10px 20px;border-radius:99px;opacity:0;transition:.3s;pointer-events:none}
 #toast.on{opacity:1}
 </style>
 </head>
 <body>
 <header>
-  <a class="logo" href="#" id="logo"><img src="/logo-exact.png?v=3" alt="Cardival – Make every moment special"></a>
-  <nav><a href="#gallery" data-go="gallery">Cards</a><a href="#contact" data-go="contact">Contact</a></nav>
+  <a class="logo" href="#" id="logo"><img class="lt" src="/cardival-logo-light.png?v=8" alt="Cardival – Make every moment special"><img class="dk" src="/cardival-logo-dark.png?v=8" alt="Cardival – Make every moment special"></a>
+  <nav><a href="#gallery" data-go="gallery">Cards</a><a href="#contact" data-go="contact">Contact</a>
+    <div id="themes" role="group" aria-label="Theme"><button data-t="light" title="Light mode" aria-label="Light mode">☀️</button><button data-t="dark" title="Dark mode" aria-label="Dark mode">🌙</button><button data-t="system" title="Match my device" aria-label="System mode">🖥️</button></div></nav>
 </header>
 
 <section class="hero" id="home">
-  <h1><img class="herologo" src="/logo-exact.png?v=3" alt="Cardival – Make every moment special"></h1>
+  <h1><img class="herologo lt" src="/cardival-logo-light.png?v=8" alt="Cardival – Make every moment special"><img class="herologo dk" src="/cardival-logo-dark.png?v=8" alt="Cardival – Make every moment special"></h1>
   <p>Pick a card, add your words, and send it in seconds.</p>
   <button class="btn" data-go="gallery">Explore Cards</button>
   <div class="row" id="previews"></div>
@@ -216,10 +228,12 @@ $("#dl").onclick=async()=>{
   x.font="46px system-ui,sans-serif";
   const lines=[];
   d.m.split("\n").forEach(p=>{let l="";p.split(" ").forEach(w=>{const t=l?l+" "+w:w;if(x.measureText(t).width>880&&l){lines.push(l);l=w}else l=t});lines.push(l)});
-  lines.slice(0,10).forEach(l=>{x.fillText(l,W/2,y);y+=66});
+  lines.slice(0,7).forEach(l=>{x.fillText(l,W/2,y);y+=66});
   if(d.from){x.font="italic 48px system-ui,sans-serif";x.fillText("— "+d.from,W/2,y+50)}
-  x.globalAlpha=.9;
-  try{const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src="/logo-full-white.png?v=2"});const lw=380,lh=lw*im.height/im.width;x.drawImage(im,(W-lw)/2,H-lh-45,lw,lh)}
+  x.globalAlpha=1;
+  try{const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src="/cardival-logo.png?v=7"});
+    const lw=360,lh=lw*im.height/im.width,lx=(W-lw)/2,ly=H-lh-40;
+    x.save();x.beginPath();if(x.roundRect)x.roundRect(lx,ly,lw,lh,26);else x.rect(lx,ly,lw,lh);x.clip();x.drawImage(im,lx,ly,lw,lh);x.restore()}
   catch(e){x.font="34px system-ui,sans-serif";x.fillText("Made with Cardival",W/2,H-60)}
   const a=document.createElement("a");a.download="cardival-card.png";a.href=cv.toDataURL("image/png");a.click();
   toast("Downloading...");
@@ -253,6 +267,17 @@ $("#sendFb").onclick=async()=>{
   }
   window.open("https://wa.me/"+WHATSAPP_NUMBER+"?text="+encodeURIComponent("Cardival feedback: "+t),"_blank");
 };
+// ===== THEME (light / dark / system) =====
+const mq=matchMedia("(prefers-color-scheme: dark)");
+function themePref(){try{return localStorage.getItem("cardival-theme")||"system"}catch(e){return"system"}}
+function applyTheme(){
+  const p=themePref(),dark=p==="dark"||(p==="system"&&mq.matches);
+  document.documentElement.dataset.theme=dark?"dark":"light";
+  document.querySelectorAll("#themes button").forEach(b=>{const on=b.dataset.t===p;b.classList.toggle("on",on);b.setAttribute("aria-pressed",on)});
+}
+$("#themes").onclick=e=>{const b=e.target.closest("button");if(!b)return;try{localStorage.setItem("cardival-theme",b.dataset.t)}catch(x){}applyTheme()};
+mq.addEventListener("change",applyTheme);
+applyTheme();
 $("#yr").textContent=new Date().getFullYear();
 drawGallery();show("home");route();
 </script>
