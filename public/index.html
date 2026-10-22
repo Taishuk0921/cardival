@@ -3,15 +3,20 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
+<link rel="icon" type="image/png" href="/favicon.png">
+<link rel="apple-touch-icon" href="/apple-touch-icon.png">
+<meta name="theme-color" content="#a42a45">
 <title>Cardival – Make Every Moment Special</title>
 <meta name="description" content="Create and share beautiful e-cards for birthdays, Eid, love, thanks and more.">
 <style>
-:root{--ink:#2b2140;--mut:#6b6480;--bg:#fff9f3;--pri:#e0447c;--pri2:#7a3cff;--card:#fff;--r:18px}
+:root{--ink:#3b1a26;--mut:#7d5a66;--bg:#fef7ed;--pri:#a42a45;--pri2:#d7495f;--card:#fff;--r:18px}
 *{box-sizing:border-box}
 body{margin:0;font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--ink);background:var(--bg);line-height:1.5}
-header{position:sticky;top:0;z-index:5;background:rgba(255,249,243,.92);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;padding:12px 5vw;border-bottom:1px solid #f0e4d8}
+header{position:sticky;top:0;z-index:5;background:rgba(254,247,237,.92);backdrop-filter:blur(8px);display:flex;justify-content:space-between;align-items:center;padding:6px 5vw;border-bottom:1px solid #f0e4d8}
 .logo{font-weight:800;font-size:1.4rem;color:var(--pri);text-decoration:none}
-.logo span{color:var(--pri2)}
+.logo img{height:62px;width:auto;display:block}
+.hero{background:radial-gradient(circle at 15% 10%,#ffd9e2 0,transparent 42%),radial-gradient(circle at 88% 18%,#ffeab8 0,transparent 38%);border-radius:0 0 36px 36px}
+.hero h1{margin:0 0 6px}.herologo{width:min(560px,90vw);height:auto}
 nav a{margin-left:18px;color:var(--ink);text-decoration:none;font-weight:600;font-size:.95rem}
 section{padding:48px 5vw;max-width:1100px;margin:auto}
 .hero{text-align:center;padding-top:60px}
@@ -34,7 +39,7 @@ section{padding:48px 5vw;max-width:1100px;margin:auto}
 .tile button{width:100%;margin-top:8px}
 .filters{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0 22px}
 .chip{border:2px solid #e6dcec;background:#fff;border-radius:99px;padding:6px 14px;cursor:pointer;font-weight:600;color:var(--ink)}
-.chip.on{background:var(--ink);color:#fff;border-color:var(--ink)}
+.chip.on{background:var(--pri);color:#fff;border-color:var(--pri)}
 .editor{display:grid;grid-template-columns:1fr 1fr;gap:28px;align-items:start}
 @media(max-width:720px){.editor{grid-template-columns:1fr}nav a{margin-left:10px}}
 label{display:block;font-weight:700;margin:12px 0 4px}
@@ -50,12 +55,12 @@ footer{text-align:center;color:var(--mut);padding:30px;font-size:.9rem}
 </head>
 <body>
 <header>
-  <a class="logo" href="#" id="logo">🎉 Card<span>ival</span></a>
+  <a class="logo" href="#" id="logo"><img src="/logo-exact.png?v=3" alt="Cardival – Make every moment special"></a>
   <nav><a href="#gallery" data-go="gallery">Cards</a><a href="#contact" data-go="contact">Contact</a></nav>
 </header>
 
 <section class="hero" id="home">
-  <h1>Make Every Moment Special</h1>
+  <h1><img class="herologo" src="/logo-exact.png?v=3" alt="Cardival – Make every moment special"></h1>
   <p>Pick a card, add your words, and send it in seconds.</p>
   <button class="btn" data-go="gallery">Explore Cards</button>
   <div class="row" id="previews"></div>
@@ -200,7 +205,7 @@ $("#wa").onclick=async()=>{
   const w=window.open("","_blank"),l=await link(),u="https://wa.me/?text="+encodeURIComponent(plainText()+"\n\n"+l);
   if(w)w.location=u;else location.href=u;
 };
-$("#dl").onclick=()=>{
+$("#dl").onclick=async()=>{
   const d=data(),W=1080,H=1350,cv=document.createElement("canvas");cv.width=W;cv.height=H;
   const x=cv.getContext("2d"),gr=x.createLinearGradient(0,0,W,H);gr.addColorStop(0,cur.g[0]);gr.addColorStop(1,cur.g[1]);
   x.fillStyle=gr;x.fillRect(0,0,W,H);x.fillStyle="#fff";x.textAlign="center";
@@ -213,7 +218,9 @@ $("#dl").onclick=()=>{
   d.m.split("\n").forEach(p=>{let l="";p.split(" ").forEach(w=>{const t=l?l+" "+w:w;if(x.measureText(t).width>880&&l){lines.push(l);l=w}else l=t});lines.push(l)});
   lines.slice(0,10).forEach(l=>{x.fillText(l,W/2,y);y+=66});
   if(d.from){x.font="italic 48px system-ui,sans-serif";x.fillText("— "+d.from,W/2,y+50)}
-  x.globalAlpha=.7;x.font="34px system-ui,sans-serif";x.fillText("Made with Cardival",W/2,H-60);
+  x.globalAlpha=.9;
+  try{const im=await new Promise((ok,no)=>{const i=new Image();i.onload=()=>ok(i);i.onerror=no;i.src="/logo-full-white.png?v=2"});const lw=380,lh=lw*im.height/im.width;x.drawImage(im,(W-lw)/2,H-lh-45,lw,lh)}
+  catch(e){x.font="34px system-ui,sans-serif";x.fillText("Made with Cardival",W/2,H-60)}
   const a=document.createElement("a");a.download="cardival-card.png";a.href=cv.toDataURL("image/png");a.click();
   toast("Downloading...");
 };
