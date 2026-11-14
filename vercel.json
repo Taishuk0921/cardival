@@ -1,0 +1,9 @@
+{
+  "framework": null,
+  "outputDirectory": "public",
+  "rewrites": [
+    { "source": "/api/cards/:id", "destination": "/api/card?id=:id" },
+    { "source": "/c/:id", "destination": "/index.html" },
+    { "source": "/admin", "destination": "/admin.html" }
+  ]
+}
