@@ -26,3 +26,11 @@ Edit files, then `git add .`, `git commit -m "message"`, `git push`. Vercel rede
 - Vercel's free (Hobby) plan is for non-commercial use.
 - Requests to the API are limited to about 4.5 MB (4 photos of up to 450 KB each fit).
 - Read feedback at https://YOUR-SITE/admin with your ADMIN_KEY.
+
+## Adding cards and art
+Cards live in `public/cards.json`. Put artwork in `public/cards/` and see `public/cards/README.txt`.
+Visitors can also choose a text style (Clean, Round, Classic, all with Bangla support) and a text color.
+
+## Link previews
+`public/og.png` is the picture shown when the site link is shared. The address inside `public/index.html`
+(`https://cardival.vercel.app/og.png`) must match your real domain.

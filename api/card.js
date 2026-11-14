@@ -12,7 +12,7 @@ module.exports = async (req, res) => {
     if (!r.ok) throw new Error("read failed");
     const c = await r.json();
     res.setHeader("Cache-Control", "public, s-maxage=3600");
-    res.json({ i: c.i, t: c.t, f: c.f, m: c.m, b: !!c.b, ps: c.ps || [] });
+    res.json({ i: c.i, t: c.t, f: c.f, m: c.m, b: !!c.b, fo: c.fo, ik: c.ik, ps: c.ps || [] });
   } catch (e) {
     console.error(e);
     res.status(500).json({ error: "server error" });

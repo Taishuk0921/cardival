@@ -19,7 +19,7 @@ module.exports = async (req, res) => {
     const { put } = await blob();
     const urls = await Promise.all(pics.map((p, k) =>
       put(`photos/${id}-${k}.jpg`, p.buf, { access: "public", contentType: "image/jpeg", addRandomSuffix: false }).then((r) => r.url)));
-    const card = { i, t: clip(b.t, 40), f: clip(b.f, 40), m: clip(b.m, 240), b: !!b.b, ps: pics.map((p, k) => ({ u: urls[k], x: p.x, y: p.y, w: p.w })) };
+    const card = { i, t: clip(b.t, 40), f: clip(b.f, 40), m: clip(b.m, 240), b: !!b.b, fo: ["clean", "round", "classic"].includes(b.fo) ? b.fo : "clean", ik: ["white", "dark", "gold"].includes(b.ik) ? b.ik : "white", ps: pics.map((p, k) => ({ u: urls[k], x: p.x, y: p.y, w: p.w })) };
     await put(`cards/${id}.json`, JSON.stringify(card), { access: "public", contentType: "application/json", addRandomSuffix: false });
     res.status(201).json({ id });
   } catch (e) {
